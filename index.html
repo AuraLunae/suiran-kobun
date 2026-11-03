@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+	<title>テンシで古典文法</title>
+	<meta name="description" content="プリントの問題を、ぜんぶ解いて身につける古典文法クイズ。助動詞の活用・意味・活用形をくり返し確認できます。">
+	<meta name="theme-color" content="#f7f4ee">
+	<link rel="manifest" href="manifest.json">
+	<link rel="apple-touch-icon" href="icons/icon-180.png">
+	<meta name="mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="apple-mobile-web-app-title" content="テンシ古典文法">
+	<meta name="apple-mobile-web-app-status-bar-style" content="default">
+	<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns=%27http://www.w3.org/2000/svg%27%20viewBox=%27-24%20-24%2048%2048%27%3E%3Cg%20fill=%27%23f7d3dc%27%20stroke=%27%2323202b%27%20stroke-width=%271.6%27%20stroke-linejoin=%27round%27%3E%3Cpath%20d=%27M0%20-3C-8.5%20-8.5%20-10%20-19.5%20-2.2%20-22L0%20-18.8L2.2%20-22C10%20-19.5%208.5%20-8.5%200%20-3Z%27%20transform=%27rotate%280%29%27/%3E%3Cpath%20d=%27M0%20-3C-8.5%20-8.5%20-10%20-19.5%20-2.2%20-22L0%20-18.8L2.2%20-22C10%20-19.5%208.5%20-8.5%200%20-3Z%27%20transform=%27rotate%2872%29%27/%3E%3Cpath%20d=%27M0%20-3C-8.5%20-8.5%20-10%20-19.5%20-2.2%20-22L0%20-18.8L2.2%20-22C10%20-19.5%208.5%20-8.5%200%20-3Z%27%20transform=%27rotate%28144%29%27/%3E%3Cpath%20d=%27M0%20-3C-8.5%20-8.5%20-10%20-19.5%20-2.2%20-22L0%20-18.8L2.2%20-22C10%20-19.5%208.5%20-8.5%200%20-3Z%27%20transform=%27rotate%28216%29%27/%3E%3Cpath%20d=%27M0%20-3C-8.5%20-8.5%20-10%20-19.5%20-2.2%20-22L0%20-18.8L2.2%20-22C10%20-19.5%208.5%20-8.5%200%20-3Z%27%20transform=%27rotate%28288%29%27/%3E%3C/g%3E%3Ccircle%20r=%272.8%27%20fill=%27%23f0c15a%27%20stroke=%27%2323202b%27%20stroke-width=%271.2%27/%3E%3C/svg%3E">
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@400;500;700&family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
+	<link rel="stylesheet" href="style.css?v=20261103d">
+</head>
+<body>
+	<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+<defs>
+<!-- 桜 -->
+<g id="sk-p"><path d="M0 -3C-8.5 -8.5 -10 -19.5 -2.2 -22L0 -18.8L2.2 -22C10 -19.5 8.5 -8.5 0 -3Z"/><path d="M0 -5.5V-13" fill="none" stroke="#c75a76" stroke-width="0.43" stroke-linecap="round"/></g>
+<g id="sk-s"><path d="M0 -2.4V-6.2" stroke="#c75a76" stroke-width="0.5" stroke-linecap="round" fill="none"/><circle cy="-7" r="1" fill="#c75a76"/></g>
+<symbol id="f-sakura" viewBox="-24 -24 48 48">
+<g fill="#f7d3dc" stroke="#3a3443" stroke-width="0.68" stroke-linejoin="round"><use href="#sk-p" transform="rotate(0)"/><use href="#sk-p" transform="rotate(72)"/><use href="#sk-p" transform="rotate(144)"/><use href="#sk-p" transform="rotate(216)"/><use href="#sk-p" transform="rotate(288)"/></g>
+<use href="#sk-s" transform="rotate(36)"/><use href="#sk-s" transform="rotate(108)"/><use href="#sk-s" transform="rotate(180)"/><use href="#sk-s" transform="rotate(252)"/><use href="#sk-s" transform="rotate(324)"/>
+<circle r="2.3" fill="#f0c15a" stroke="#3a3443" stroke-width="0.5"/>
+</symbol>
+
+<!-- 梅 -->
+<circle id="um-c" cy="-11.5" r="8"/>
+<path id="um-l" d="M0 -6V-12.5" stroke="#3a3443" stroke-width="0.37" opacity=".55" fill="none" stroke-linecap="round"/>
+<g id="um-s"><path d="M0 -1.5V-5" stroke="#b23a5a" stroke-width="0.5" stroke-linecap="round" fill="none"/><circle cy="-5.8" r=".9" fill="#b23a5a"/></g>
+<symbol id="f-ume" viewBox="-24 -24 48 48">
+<g fill="#f0adbd" stroke="#3a3443" stroke-width="1.36"><use href="#um-c" transform="rotate(0)"/><use href="#um-c" transform="rotate(72)"/><use href="#um-c" transform="rotate(144)"/><use href="#um-c" transform="rotate(216)"/><use href="#um-c" transform="rotate(288)"/></g>
+<g fill="#f0adbd"><use href="#um-c" transform="rotate(0)"/><use href="#um-c" transform="rotate(72)"/><use href="#um-c" transform="rotate(144)"/><use href="#um-c" transform="rotate(216)"/><use href="#um-c" transform="rotate(288)"/></g>
+<use href="#um-l" transform="rotate(36)"/><use href="#um-l" transform="rotate(108)"/><use href="#um-l" transform="rotate(180)"/><use href="#um-l" transform="rotate(252)"/><use href="#um-l" transform="rotate(324)"/>
+<use href="#um-s" transform="rotate(0)"/><use href="#um-s" transform="rotate(51.4286)"/><use href="#um-s" transform="rotate(102.857)"/><use href="#um-s" transform="rotate(154.286)"/><use href="#um-s" transform="rotate(205.714)"/><use href="#um-s" transform="rotate(257.143)"/><use href="#um-s" transform="rotate(308.571)"/>
+<circle r="1.8" fill="#f0c15a" stroke="#3a3443" stroke-width="0.43"/>
+</symbol>
+
+<!-- 菊 -->
+<ellipse id="ki-o" cy="-14" rx="2.7" ry="8"/>
+<ellipse id="ki-i" cy="-7.6" rx="2.3" ry="5.4"/>
+<symbol id="f-kiku" viewBox="-24 -24 48 48">
+<g fill="#f6e8ac" stroke="#3a3443" stroke-width="0.5"><use href="#ki-o" transform="rotate(0)"/><use href="#ki-o" transform="rotate(22.5)"/><use href="#ki-o" transform="rotate(45)"/><use href="#ki-o" transform="rotate(67.5)"/><use href="#ki-o" transform="rotate(90)"/><use href="#ki-o" transform="rotate(112.5)"/><use href="#ki-o" transform="rotate(135)"/><use href="#ki-o" transform="rotate(157.5)"/><use href="#ki-o" transform="rotate(180)"/><use href="#ki-o" transform="rotate(202.5)"/><use href="#ki-o" transform="rotate(225)"/><use href="#ki-o" transform="rotate(247.5)"/><use href="#ki-o" transform="rotate(270)"/><use href="#ki-o" transform="rotate(292.5)"/><use href="#ki-o" transform="rotate(315)"/><use href="#ki-o" transform="rotate(337.5)"/></g>
+<g fill="#ecc95a" stroke="#3a3443" stroke-width="0.5"><use href="#ki-i" transform="rotate(15)"/><use href="#ki-i" transform="rotate(45)"/><use href="#ki-i" transform="rotate(75)"/><use href="#ki-i" transform="rotate(105)"/><use href="#ki-i" transform="rotate(135)"/><use href="#ki-i" transform="rotate(165)"/><use href="#ki-i" transform="rotate(195)"/><use href="#ki-i" transform="rotate(225)"/><use href="#ki-i" transform="rotate(255)"/><use href="#ki-i" transform="rotate(285)"/><use href="#ki-i" transform="rotate(315)"/><use href="#ki-i" transform="rotate(345)"/></g>
+<circle r="3" fill="#d9a640" stroke="#3a3443" stroke-width="0.5"/>
+</symbol>
+
+<!-- 桔梗 -->
+<path id="kk-v" d="M0 -3V-15" stroke="#5b4aa8" stroke-width="0.5" stroke-linecap="round" fill="none"/>
+<symbol id="f-kikyo" viewBox="-24 -24 48 48">
+<path d="M0.0 -21.5 Q4.0 -13.0 4.4 -6.1 Q11.1 -7.8 20.4 -6.6 Q13.6 -0.2 7.1 2.3 Q10.8 8.2 12.6 17.4 Q4.4 12.8 0.0 7.5 Q-4.4 12.8 -12.6 17.4 Q-10.8 8.2 -7.1 2.3 Q-13.6 -0.2 -20.4 -6.6 Q-11.1 -7.8 -4.4 -6.1 Q-4.0 -13.0 0.0 -21.5Z" fill="#b6aae6" stroke="#3a3443" stroke-width="0.68" stroke-linejoin="round"/>
+<use href="#kk-v" transform="rotate(0)"/><use href="#kk-v" transform="rotate(72)"/><use href="#kk-v" transform="rotate(144)"/><use href="#kk-v" transform="rotate(216)"/><use href="#kk-v" transform="rotate(288)"/>
+<circle r="2.6" fill="#f4efd6" stroke="#3a3443" stroke-width="0.5"/>
+<circle r="1" fill="#5b4aa8"/>
+</symbol>
+
+<!-- 椿 -->
+<circle id="tb-o" cy="-11" r="9.5"/>
+<circle id="tb-i" cy="-7.6" r="6.4"/>
+<path id="tb-l" d="M0 -7V-13.5" stroke="#3a3443" stroke-width="0.37" opacity=".5" fill="none" stroke-linecap="round"/>
+<circle id="tb-d" cy="-2.6" r=".7" fill="#b8832a"/>
+<symbol id="f-tsubaki" viewBox="-24 -24 48 48">
+<g fill="#cf5a68" stroke="#3a3443" stroke-width="1.36"><use href="#tb-o" transform="rotate(0)"/><use href="#tb-o" transform="rotate(72)"/><use href="#tb-o" transform="rotate(144)"/><use href="#tb-o" transform="rotate(216)"/><use href="#tb-o" transform="rotate(288)"/></g>
+<g fill="#cf5a68"><use href="#tb-o" transform="rotate(0)"/><use href="#tb-o" transform="rotate(72)"/><use href="#tb-o" transform="rotate(144)"/><use href="#tb-o" transform="rotate(216)"/><use href="#tb-o" transform="rotate(288)"/></g>
+<use href="#tb-l" transform="rotate(36)"/><use href="#tb-l" transform="rotate(108)"/><use href="#tb-l" transform="rotate(180)"/><use href="#tb-l" transform="rotate(252)"/><use href="#tb-l" transform="rotate(324)"/>
+<g fill="#e48792" stroke="#3a3443" stroke-width="1.12"><use href="#tb-i" transform="rotate(36)"/><use href="#tb-i" transform="rotate(108)"/><use href="#tb-i" transform="rotate(180)"/><use href="#tb-i" transform="rotate(252)"/><use href="#tb-i" transform="rotate(324)"/></g>
+<g fill="#e48792"><use href="#tb-i" transform="rotate(36)"/><use href="#tb-i" transform="rotate(108)"/><use href="#tb-i" transform="rotate(180)"/><use href="#tb-i" transform="rotate(252)"/><use href="#tb-i" transform="rotate(324)"/></g>
+<circle r="3.8" fill="#f2c94c" stroke="#3a3443" stroke-width="0.5"/>
+<use href="#tb-d" transform="rotate(0)"/><use href="#tb-d" transform="rotate(45)"/><use href="#tb-d" transform="rotate(90)"/><use href="#tb-d" transform="rotate(135)"/><use href="#tb-d" transform="rotate(180)"/><use href="#tb-d" transform="rotate(225)"/><use href="#tb-d" transform="rotate(270)"/><use href="#tb-d" transform="rotate(315)"/>
+</symbol>
+
+<!-- 秋桜 -->
+<g id="cs-p"><path d="M0 -3C-5.5 -6 -8.2 -14 -6.6 -20L-3.4 -18.4L0 -21.8L3.4 -18.4L6.6 -20C8.2 -14 5.5 -6 0 -3Z"/><path d="M0 -5.5V-15" fill="none" stroke="#c4577f" stroke-width="0.37" stroke-linecap="round" opacity=".8"/></g>
+<symbol id="f-cosmos" viewBox="-24 -24 48 48">
+<g fill="#eaa9c1" stroke="#3a3443" stroke-width="0.65" stroke-linejoin="round"><use href="#cs-p" transform="rotate(0)"/><use href="#cs-p" transform="rotate(45)"/><use href="#cs-p" transform="rotate(90)"/><use href="#cs-p" transform="rotate(135)"/><use href="#cs-p" transform="rotate(180)"/><use href="#cs-p" transform="rotate(225)"/><use href="#cs-p" transform="rotate(270)"/><use href="#cs-p" transform="rotate(315)"/></g>
+<circle r="3.6" fill="#f0c15a" stroke="#3a3443" stroke-width="0.5"/>
+<circle r="1.1" fill="#b8832a"/>
+</symbol>
+
+<!-- つぼみ -->
+<symbol id="f-bud" viewBox="-24 -24 48 48">
+<path d="M1 23C1 12 3 4 4 -3" fill="none" stroke="#3a3443" stroke-width="0.68" stroke-linecap="round"/>
+<path d="M1.6 15C-6 14-11 9-12 4C-5 4-1 8 1.6 15Z" fill="#bcd0b6" stroke="#3a3443" stroke-width="0.62" stroke-linejoin="round"/>
+<path d="M4 -3C-4 -7-4 -19 4 -22C12 -19 12 -7 4 -3Z" fill="#f7d3dc" stroke="#3a3443" stroke-width="0.68" stroke-linejoin="round"/>
+<path d="M4 -3C2 -9 2 -16 4 -22" fill="none" stroke="#c75a76" stroke-width="0.43" stroke-linecap="round"/>
+<path d="M-1 -2.5Q4 2 9 -2.5Q4 -6 -1 -2.5Z" fill="#bcd0b6" stroke="#3a3443" stroke-width="0.56" stroke-linejoin="round"/>
+</symbol>
+</defs></svg>
+
+	<main class="app" id="app">
+
+		<!-- 読み込み中 -->
+		<section class="view view-loading" id="loading-view">
+			<div class="loading-box">
+				<div id="loading-mascot"></div>
+				<p class="loading-title" id="loading-title">問題を準備しています</p>
+				<p class="loading-sub" id="loading-sub">はじめだけ、すべての問題をダウンロードします。あとは、オフラインでも解けます。</p>
+				<div class="loading-bar"><div id="loading-fill"></div></div>
+				<button class="btn-ghost" id="loading-retry" type="button" hidden>もう一度ためす</button>
+			</div>
+		</section>
+
+		<!-- ホーム -->
+		<section class="view" id="home-view" hidden>
+			<header class="brand-row">
+				<h1 class="brand"><svg class="brand-mark" aria-hidden="true"><use href="#f-sakura"/></svg><span>テンシで古典文法</span></h1>
+				<div class="stat-chips" aria-label="学習の記録">
+					<span class="stat-chip offline-chip" id="offline-chip" hidden>オフライン</span>
+					<span class="stat-chip"><i class="dot-s a"></i>連続 <b id="stat-streak">0</b>日</span>
+					<span class="stat-chip"><i class="dot-s b"></i>累計 <b id="stat-total">0</b>問</span>
+				</div>
+			</header>
+
+			<section class="hero" aria-labelledby="hero-title">
+				<div class="hero-top">
+					<div class="hero-mascot" id="hero-mascot"></div>
+					<div class="hero-copy">
+						<h2 id="hero-title">全<span id="hero-total">0</span>問に、ぜんぶふれよう</h2>
+						<p class="hero-sub">解いた問題 <b id="hero-touched">0</b> / <span id="hero-total2">0</span></p>
+					</div>
+				</div>
+				<div class="dotmap" id="dotmap" aria-hidden="true"></div>
+				<p class="legend" aria-hidden="true"><span><i class="dot ok"></i>解いた</span><span><i class="dot ng"></i>まちがえた</span><span><i class="dot"></i>まだ</span></p>
+
+				<div class="resume-area" id="resume-area" hidden>
+					<button class="btn-sticker" id="resume-btn" type="button">
+						<span class="btn-label">つづきから</span><span class="btn-count" id="resume-count"></span>
+					</button>
+					<button class="btn-ghost" id="restart-btn" type="button">はじめからやり直す</button>
+				</div>
+			</section>
+
+			<section class="rounds" aria-labelledby="rounds-title">
+				<h2 class="section-title" id="rounds-title">どの回にする？</h2>
+				<div id="rounds"></div>
+				<p class="cta-note">ボタンを押すと、そのステップの問題が始まります。途中でやめても、つづきから解けます。一巡するまでは、まだ解いていない問題が出ます。</p>
+			</section>
+
+			<section class="ranking" id="ranking-card" aria-labelledby="ranking-title">
+				<div class="section-head">
+					<h2 class="section-title" id="ranking-title">ランキング</h2>
+					<button class="text-btn" id="rank-refresh" type="button">更新</button>
+				</div>
+				<div id="rank-mine" aria-live="polite"></div>
+				<div id="rank-body" aria-live="polite"></div>
+				<p class="rank-note" id="rank-note" hidden></p>
+			</section>
+
+			<section class="card portal-card" id="portal-card" aria-labelledby="portal-title">
+				<h2 class="section-title" id="portal-title">テンシ ポータルと連携</h2>
+				<p class="portal-lead">連携すると、毎日の回答数がポータルのランキングに載ります。ポータルの「連携する」ボタンからも、かんたんに連携できます。</p>
+				<div id="portal-link"></div>
+			</section>
+
+			<footer class="foot">プリントの問題を、少しずつ増やしています。</footer>
+		</section>
+
+		<!-- クイズ -->
+		<section class="view" id="quiz-view" hidden>
+			<header class="quiz-top">
+				<button class="icon-btn" id="quit-btn" type="button" aria-label="いったんやめる">
+					<svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" fill="none"/></svg>
+				</button>
+				<div class="progress" id="progress" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-label="進み具合">
+					<div class="progress-fill" id="progress-fill"></div>
+					<svg class="progress-petal" id="progress-petal" aria-hidden="true"><use href="#f-sakura"/></svg>
+				</div>
+				<span class="quiz-count" id="quiz-count">1 / 1</span>
+			</header>
+
+			<aside class="passage" id="passage" hidden aria-label="古文">
+				<div class="passage-head">
+					<span class="passage-title" id="passage-title"></span>
+					<span class="passage-hint">スクロールできます</span>
+				</div>
+				<div class="passage-scroll" id="passage-scroll" tabindex="0">
+					<p class="passage-text" id="passage-text"></p>
+					<ol class="notes" id="passage-notes"></ol>
+				</div>
+			</aside>
+
+			<article class="qcard" id="qcard">
+				<div class="q-meta">
+					<span class="chip chip-tag" id="q-tag"></span>
+					<span class="chip chip-new" id="q-new" hidden>はじめての問題</span>
+					<span class="q-ref" id="q-ref"></span>
+				</div>
+				<h2 class="q-prompt" id="q-prompt"></h2>
+				<div class="q-visual" id="q-visual"></div>
+				<div class="choices" id="choices" role="group" aria-label="選択肢"></div>
+				<div class="q-extra" id="dk-row"><button class="dk-btn" id="dk-btn" type="button">わからない</button></div>
+				<div class="feedback" id="feedback" hidden aria-live="polite"></div>
+				<div class="fx" id="fx" aria-hidden="true"></div>
+			</article>
+
+			<div class="next-bar" id="next-bar" hidden>
+				<button class="btn-sticker btn-next" id="next-btn" type="button">つぎへ</button>
+			</div>
+		</section>
+
+		<!-- 結果 -->
+		<section class="view" id="result-view" hidden>
+			<div class="result" id="result-box"></div>
+		</section>
+
+	</main>
+
+	<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+	<dialog id="quit-dialog" class="dialog" aria-labelledby="quit-title">
+		<h2 id="quit-title">ここでやめますか？</h2>
+		<p>ここまでの答えは保存されています。あとで、つづきから解けます。</p>
+		<div class="dialog-actions">
+			<button class="btn-sticker small" type="button" id="quit-stay">つづける</button>
+			<button class="btn-ghost" type="button" id="quit-go">ホームにもどる</button>
+		</div>
+	</dialog>
+
+	<dialog id="portal-confirm" class="dialog" aria-labelledby="portal-confirm-title">
+		<h2 id="portal-confirm-title">テンシ ポータルと連携</h2>
+		<p id="portal-confirm-text"></p>
+		<div class="dialog-actions">
+			<button class="btn-sticker small" type="button" id="portal-confirm-ok">連携する</button>
+			<button class="btn-ghost" type="button" id="portal-confirm-cancel">キャンセル</button>
+		</div>
+	</dialog>
+
+	<noscript><p style="padding:24px;font-family:sans-serif">このサイトはJavaScriptを使います。ブラウザの設定で有効にしてください。</p></noscript>
+
+	<script src="portal-config.js?v=20261103a"></script>
+	<script src="portal-client.js?v=20261103a"></script>
+	<script src="app.js?v=20261103d"></script>
+	<script>
+		// オフライン対応：画面・プログラム・問題を sw.js がキャッシュする（問題データの読み込みの成否に関係なく登録）
+		if ('serviceWorker' in navigator) {
+			window.addEventListener('load', function () { navigator.serviceWorker.register('sw.js').catch(function () {}); });
+		}
+	</script>
+</body>
+</html>
