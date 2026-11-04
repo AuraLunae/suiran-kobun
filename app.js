@@ -141,20 +141,48 @@ function isValidRaw(d) {
 	return !!d && typeof d.version === 'string' && Array.isArray(d.prints) && d.prints.length > 0 &&
 		d.prints.every(p => p && p.id && Array.isArray(p.questions) && p.questions.length > 0);
 }
+// 同じ空欄（group・問番号・空欄番号がおなじ）の問題は、ひとつの「まとめた問題」にして、組み合わせで答えさせる
+// （基本形・文法的意味・活用形 など。ひとつでもまちがえたら、まちがい）
+function makeSet(parts) {
+	const f = parts[0];
+	const m = /^(.*?《[^》]*》)/.exec(f.prompt || '');
+	const head = m ? m[1] : /^傍線部/.test(f.prompt || '') ? '傍線部の助動詞' : (f.ref || 'この問題');
+	return {
+		...f, composite: true, parts,
+		id: parts.map(p => p.id).join('+'),
+		tag: parts.map(p => p.tag).join('・'),
+		prompt: `${head}について、すべて答えよう`,
+		choices: [], answer: parts.map(p => `${p.tag} ${p.answer}`).join('　'), note: ''
+	};
+}
+function mergeSets(list) {
+	const out = [], sets = new Map();
+	list.forEach(q => {
+		if (!q.group) { out.push(q); return; }
+		const key = [q.group, q.ref || '', q.blank == null ? '' : q.blank].join('|');
+		if (!sets.has(key)) { const set = { parts: [] }; sets.set(key, set); out.push(set); }
+		sets.get(key).parts.push(q);
+	});
+	return out.map(x => x.parts ? (x.parts.length > 1 ? makeSet(x.parts) : x.parts[0]) : x);
+}
 function buildIndex(raw) {
-	const questions = [], byId = new Map();
-	raw.prints.forEach(p => {
+	const questions = [], byId = new Map(), partMap = new Map();     // partMap: ばらばらだった頃の問題の id → まとめた問題の id
+	const prints = raw.prints.map(p0 => {
+		const p = { ...p0 };
 		if (!p.round || !p.step) {
 			const parts = String(p.title || '').split(/\s+/);
 			p.round = p.round || parts[0] || p.id;
 			p.step = p.step || parts.slice(1).join(' ') || p.id;
 		}
-		p.questions.forEach(q => {
+		p.questions = mergeSets(p0.questions).map(q => {
 			q.printId = p.id; q.order = questions.length;
+			if (q.parts) q.parts.forEach(pt => { pt.printId = p.id; partMap.set(pt.id, q.id); });
 			questions.push(q); byId.set(q.id, q);
+			return q;
 		});
+		return p;
 	});
-	return { version: raw.version, prints: raw.prints, questions, byId };
+	return { version: raw.version, prints, questions, byId, partMap };
 }
 async function fetchJSON(url, opts) {
 	const r = await fetch(url, opts);
@@ -188,6 +216,7 @@ async function checkForUpdate(currentVersion) {
 function applyPending() {
 	if (!pendingRaw) return;
 	DATA = buildIndex(pendingRaw);
+	migrateParts();
 	pendingRaw = null;
 	renderHome();
 	toast('問題を新しくしました');
@@ -278,11 +307,17 @@ function newRun(printId, kind, ids, round) {
 // 保存されていた run を、いまの問題データに合わせて整える。もう終わっている・問題が無い run は null
 function cleanRun(r) {
 	if (!r || typeof r !== 'object' || !Array.isArray(r.ids) || !r.results || typeof r.results !== 'object') return null;
-	const ids = r.ids.filter(id => DATA.byId.has(id));
+	// ばらばらの問題で作られていた一巡は、まとめた問題に直す（部分が全部そろっているときだけ答え済み。全部せいかいなら正解）
+	const mapId = id => DATA.byId.has(id) ? id : (DATA.partMap.get(id) || null);
+	const ids = [...new Set(r.ids.map(mapId).filter(Boolean))];
 	if (!ids.length) return null;
 	const results = {};
-	ids.forEach(id => { if (typeof r.results[id] === 'boolean') results[id] = r.results[id]; });
-	const newIds = (Array.isArray(r.newIds) ? r.newIds : []).filter(id => ids.includes(id));
+	ids.forEach(id => {
+		if (typeof r.results[id] === 'boolean') { results[id] = r.results[id]; return; }
+		const q = DATA.byId.get(id);
+		if (q.parts && q.parts.every(p => typeof r.results[p.id] === 'boolean')) results[id] = q.parts.every(p => r.results[p.id] === true);
+	});
+	const newIds = [...new Set((Array.isArray(r.newIds) ? r.newIds : []).map(mapId).filter(id => id && ids.includes(id)))];
 	const printId = r.printId || (DATA.byId.get(ids[0]) || {}).printId;
 	if (!printId) return null;
 	if (ids.every(id => id in results)) return null;
@@ -308,6 +343,18 @@ function migrateOldSession() {
 	if (!printId || runs[printId]) return;
 	const run = cleanRun({ ...old, printId, kind: 'main' });
 	if (run) { runs[printId] = run; saveRuns(); }
+}
+// ばらばらだった頃の記録を、まとめた問題の記録に引き継ぐ（部分の記録が全部あるときだけ）
+function migrateParts() {
+	let changed = false;
+	DATA.questions.forEach(q => {
+		if (!q.parts || progress[q.id]) return;
+		const ps = q.parts.map(p => progress[p.id]);
+		if (!ps.every(p => p && p.n > 0)) return;
+		progress[q.id] = { n: Math.max(...ps.map(p => p.n)), c: Math.min(...ps.map(p => p.c || 0)), last: Math.max(...ps.map(p => p.last || 0)), ok: ps.every(p => p.ok === true) };
+		changed = true;
+	});
+	if (changed) writeJSON(KEYS.progress, progress);
 }
 // その回で、いちばん最近の答えがまちがいの問題（order があれば、その順番。なければプリントの順番）
 function wrongIds(printId, order) {
@@ -542,7 +589,9 @@ function renderQuestion() {
 	// 選択肢
 	const ch = $('choices');
 	ch.innerHTML = '';
-	q.choices.forEach((c, idx) => {
+	ch.classList.toggle('is-set', !!q.composite);
+	if (q.composite) renderParts(q);
+	else q.choices.forEach((c, idx) => {
 		const b = document.createElement('button');
 		b.type = 'button';
 		b.className = 'choice';
@@ -561,6 +610,38 @@ function renderQuestion() {
 	window.scrollTo({ top: 0 });
 }
 
+// まとめた問題：項目ごとに選んで、ぜんぶ選んだら「こたえあわせ」
+let setSel = [], lastOks = null;
+function renderParts(q) {
+	setSel = q.parts.map(() => null); lastOks = null;
+	const items = q.parts.map((p, i) => `<div class="part" data-part="${i}" data-qid="${esc(p.id)}"><p class="part-label">${esc(p.tag)}</p><div class="part-choices">${
+		p.choices.map((c, j) => `<button type="button" class="pchip" data-part="${i}" data-c="${j}" aria-pressed="false">${esc(c)}</button>`).join('')
+	}</div></div>`).join('');
+	const ch = $('choices');
+	ch.innerHTML = items + '<div class="part-submit"><button class="btn-sticker small" id="submit-btn" type="button" disabled>こたえあわせ</button><span class="fb-hint">ぜんぶ選んでから。ひとつでもまちがえたら、まちがいになります</span></div>';
+	ch.querySelectorAll('.pchip').forEach(b => b.addEventListener('click', () => pickPart(Number(b.dataset.part), Number(b.dataset.c))));
+	$('submit-btn').addEventListener('click', () => answerSet(false));
+}
+function pickPart(i, j) {
+	if (locked || !cur || !cur.composite) return;
+	setSel[i] = j;
+	document.querySelectorAll(`#choices .pchip[data-part="${i}"]`).forEach(b => {
+		const on = Number(b.dataset.c) === j;
+		b.classList.toggle('is-selected', on);
+		b.setAttribute('aria-pressed', on ? 'true' : 'false');
+	});
+	$('submit-btn').disabled = setSel.some(v => v === null);
+}
+function partsHTML(q, kind) {
+	return `<ul class="fb-parts">${q.parts.map((p, i) => {
+		const good = lastOks ? lastOks[i] : null;
+		const mark = good === null ? '' : good ? '<span class="fp-mark ok">○</span>' : '<span class="fp-mark ng">×</span>';
+		const picked = kind === 'ng' && !good && setSel[i] != null && p.choices[setSel[i]] != null
+			? `<small class="fp-you">あなたの答え：${esc(p.choices[setSel[i]])}</small>` : '';
+		return `<li>${mark}<span class="fp-tag">${esc(p.tag)}</span><span class="fp-ans"><b>${esc(p.answer)}</b></span>${picked}<p class="fp-note">${esc(p.note || '')}</p></li>`;
+	}).join('')}</ul>`;
+}
+
 // ふりかえりの中身。kind: ok(せいかい) / ng(まちがい) / unknown(わからない) / lucky(たまたま当たった)
 function fbHTML(q, kind) {
 	const ok = kind === 'ok';
@@ -571,9 +652,9 @@ function fbHTML(q, kind) {
 	return `<div class="fb-face">${face}</div>
 		<div class="fb-body">
 			<p class="fb-title">${title}</p>
-			${ok ? '' : `<p class="fb-ans">正解は <b>${esc(q.answer)}</b></p>`}
+			${ok || q.composite ? '' : `<p class="fb-ans">正解は <b>${esc(q.answer)}</b></p>`}
 			${sent ? `<p class="fb-sent">${sent}</p>` : ''}
-			<p class="fb-note">${esc(q.note || '')}</p>
+			${q.composite ? partsHTML(q, kind) : `<p class="fb-note">${esc(q.note || '')}</p>`}
 			${stripHTML(q)}
 			${ok ? '<div class="fb-actions"><button class="lucky-btn" id="lucky-btn" type="button">たまたま当たった</button><span class="fb-hint">自信がなければ、まちがいに入れて、あとで復習できます</span></div>' : ''}
 		</div>`;
@@ -586,21 +667,30 @@ function showFeedback(q, kind) {
 }
 
 function choose(idx) { answer(idx); }
-function giveUp() { answer(-1); }          // 「わからない」：まちがい扱い
+function giveUp() { if (cur && cur.composite) answerSet(true); else answer(-1); }          // 「わからない」：まちがい扱い
 
-function answer(idx) {
-	if (locked || !cur) return;
-	locked = true;
-	const q = cur;
-	const unknown = idx < 0;
-	const ok = !unknown && q.choices[idx] === q.answer;
+// 答えを記録して、ふりかえりを出す（ひとつの問題も、まとめた問題も共通）
+function settle(q, ok, unknown, oks) {
 	const wasNew = recordResult(q, ok, unknown ? 'unknown' : null);
 	session.results[q.id] = ok;
 	if (wasNew && !session.newIds.includes(q.id)) session.newIds.push(q.id);
 	saveSession();
 	setGauge(runDone(session), session.ids.length);
 	$('dk-row').hidden = true;
+	lastOks = oks || null;
+	showFeedback(q, ok ? 'ok' : unknown ? 'unknown' : 'ng');
+	$('next-bar').hidden = false;
+	if (ok) burst();
+	$('next-btn').focus({ preventScroll: true });
+	$('feedback').scrollIntoView({ block: 'nearest', behavior: REDUCED ? 'auto' : 'smooth' });
+}
 
+function answer(idx) {
+	if (locked || !cur || cur.composite) return;
+	locked = true;
+	const q = cur;
+	const unknown = idx < 0;
+	const ok = !unknown && q.choices[idx] === q.answer;
 	document.querySelectorAll('#choices .choice').forEach((b, i) => {
 		b.disabled = true;
 		const isAns = q.choices[i] === q.answer;
@@ -608,13 +698,28 @@ function answer(idx) {
 		else if (i === idx) { b.classList.add('is-wrong'); if (!REDUCED) b.classList.add('shake'); }
 		else b.classList.add('is-dim');
 	});
+	settle(q, ok, unknown, null);
+}
 
-	showFeedback(q, ok ? 'ok' : unknown ? 'unknown' : 'ng');
-	$('next-bar').hidden = false;
-	if (ok) burst();
-	const nb = $('next-btn');
-	nb.focus({ preventScroll: true });
-	$('feedback').scrollIntoView({ block: 'nearest', behavior: REDUCED ? 'auto' : 'smooth' });
+// まとめた問題：ぜんぶの項目が合っていたときだけ正解（ひとつでもまちがえたら、まちがい）
+function answerSet(unknown) {
+	if (locked || !cur || !cur.composite) return;
+	if (!unknown && setSel.some(v => v === null)) return;
+	locked = true;
+	const q = cur;
+	const oks = q.parts.map((p, i) => !unknown && p.choices[setSel[i]] === p.answer);
+	const ok = oks.every(Boolean);
+	document.querySelectorAll('#choices .pchip').forEach(b => {
+		const i = Number(b.dataset.part), j = Number(b.dataset.c), p = q.parts[i];
+		b.disabled = true;
+		b.classList.remove('is-selected');
+		if (p.choices[j] === p.answer) b.classList.add('is-correct');
+		else if (!unknown && j === setSel[i]) { b.classList.add('is-wrong'); if (!REDUCED) b.classList.add('shake'); }
+		else b.classList.add('is-dim');
+	});
+	const sub = document.querySelector('#choices .part-submit');
+	if (sub) sub.hidden = true;
+	settle(q, ok, unknown, oks);
 }
 
 // 「たまたま当たった」：正解にしていた答えを、まちがいに送る
@@ -763,9 +868,11 @@ function bindEvents() {
 		if (document.querySelector('dialog[open]')) return;
 		if (/^[1-9]$/.test(e.key) && !locked) {
 			const i = Number(e.key) - 1;
-			if (cur && i < cur.choices.length) { e.preventDefault(); choose(i); }
+			if (cur && !cur.composite && i < cur.choices.length) { e.preventDefault(); choose(i); }
 		} else if (e.key === '0' && !locked) {
 			e.preventDefault(); giveUp();
+		} else if (e.key === 'Enter' && !locked && cur && cur.composite && !setSel.some(v => v === null) && !(e.target.closest && e.target.closest('button'))) {
+			e.preventDefault(); answerSet(false);
 		} else if (e.key === 'Enter' && locked && !(e.target.closest && e.target.closest('button'))) {
 			e.preventDefault(); next();
 		}
@@ -1143,6 +1250,7 @@ async function boot() {
 	const cached = readJSON(KEYS.data, null);
 	if (isValidRaw(cached)) {
 		DATA = buildIndex(cached);
+		migrateParts();
 		migrateOldSession();
 		renderHome(); show('home');
 		checkForUpdate(cached.version);
@@ -1152,6 +1260,7 @@ async function boot() {
 		const raw = await downloadAll((d, t) => { $('loading-fill').style.width = Math.max(8, Math.round(d / t * 100)) + '%'; });
 		saveData(raw);
 		DATA = buildIndex(raw);
+		migrateParts();
 		migrateOldSession();
 		renderHome(); show('home');
 	} catch (e) {
